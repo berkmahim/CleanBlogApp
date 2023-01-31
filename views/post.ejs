@@ -42,7 +42,8 @@
       </article>
 
       <hr>
-
+    <a style="margin-left: 9vw !important;" class="offset-lg-6 col-lg-4 btn btn-danger m-5" href="/post/<%= post._id %>?_method=DELETE" onclick="return confirm('post silinecek emin misiniz?')">delete post</a>
+    <a class="offset-4 col-lg-4 btn btn-primary m-5" href="/post/edit/<%= post._id %>">update post</a>
       <!-- Footer -->
       <%- include('partials/_footer') -%>
 

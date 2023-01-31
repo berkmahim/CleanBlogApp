@@ -1,10 +1,13 @@
 import express from 'express'
 import mongoose from 'mongoose'
 import ejs from 'ejs'
-import Post from './models/Post.js'
+import methodOverride from 'method-override'
+
+import PostController from "./controllers/PostController.js";
+import PageController from "./controllers/PageController.js";
+
 
 mongoose.set('strictQuery', false)
-
 const app = express()
 const port = 3000
 const blog = { id: 1, title: "Blog title", description: "Blog description" }
@@ -13,37 +16,23 @@ app.set('view engine', 'ejs')
 app.use(express.static('public'))
 app.use(express.urlencoded({ extended: true }))
 app.use(express.json())
-
+app.use(methodOverride('_method', {
+    methods: ['POST', 'GET']
+}))
 
 mongoose.connect('mongodb://localhost/cleanblog-test-db')
 
 
 
 
-app.get('/', async (req, res) => {
-    const posts = await Post.find({})
-    res.render('index', {
-        posts
-    })
-})
-app.get('/about', (req, res) => {
-    res.render('about')
-})
-app.get('/addPost', (req, res) => {
-    res.render('add_post')
-})
-app.get('/post/:id', async (req, res) => {
-
-    const post = await Post.findById(req.params.id)
-    res.render('post', {
-        post
-    })
-})
-
-app.post('/addPost', async (req, res) => {
-    await Post.create(req.body)
-    res.redirect('/')
-})
+app.get('/', PostController.getAllPosts)
+app.get('/about', PageController.getAboutPage)
+app.get('/addPostPage', PageController.getAddPage)
+app.get('/post/:id', PostController.getPost)
+app.get('/post/edit/:id', PageController.getEditPage)
+app.put('/post/:id',PostController.updatePost)
+app.delete('/post/:id', PostController.deletePost)
+app.post('/addPost', PostController.addPost)
 
 
 
